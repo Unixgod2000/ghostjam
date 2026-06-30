@@ -1,0 +1,245 @@
+backend:
+  name: github
+  repo: GITHUB_USERNAME/ghostjam      # ← update with your GitHub username
+  branch: main
+  base_url: https://OAUTH_WORKER_URL  # ← update after deploying the Sveltia OAuth Worker
+
+media_folder: images
+public_folder: /images
+
+site_url: https://www.ghostjam.us
+
+collections:
+
+  # ── Home Page + Site-wide settings ────────────────────────
+  - name: site_content
+    label: Site Content
+    files:
+
+      - name: home
+        label: Home Page
+        file: _data/content.json
+        format: json
+        fields:
+
+          - label: "Browser Tab Title"
+            name: site_title
+            widget: string
+            hint: "Text shown in the browser tab."
+
+          - label: "Navigation Logo Text"
+            name: nav_title
+            widget: string
+            required: false
+            hint: "Site name shown in the top-left navigation bar."
+
+          - label: "Hero — Logo Image"
+            name: hero_image
+            widget: image
+            required: false
+            hint: "Logo or image in the hero section. Leave blank for text only."
+
+          - label: "Hero — Eyebrow Text"
+            name: hero_eyebrow
+            widget: string
+            required: false
+            hint: "Small label above the main title (e.g. 'Virginia Paranormal Research')."
+
+          - label: "Hero — Main Title"
+            name: hero_title
+            widget: string
+            hint: "Large heading in the hero section."
+
+          - label: "Hero — Subtitle"
+            name: hero_subtitle
+            widget: string
+            hint: "Tagline below the main title."
+
+          - label: "Hero — Body Text"
+            name: hero_body
+            widget: text
+            hint: "Introductory paragraph."
+
+          - label: "Features"
+            name: services
+            widget: list
+            summary: "{{fields.title}}"
+            hint: "The feature/service cards in the middle of the home page."
+            fields:
+              - label: "Title"
+                name: title
+                widget: string
+              - label: "Description"
+                name: body
+                widget: text
+
+          - label: "CTA — Heading"
+            name: cta_heading
+            widget: string
+            hint: "Heading in the call-to-action section."
+
+          - label: "CTA — Body Text"
+            name: cta_body
+            widget: text
+            hint: "Paragraph below the CTA heading."
+
+          - label: "Contact Email"
+            name: contact_email
+            widget: string
+            hint: "Email address shown site-wide in contact areas and the footer."
+
+          - label: "Footer Text"
+            name: footer_text
+            widget: string
+            hint: "Organization name in the footer copyright line."
+
+          - label: "Events Calendar — Embed URL"
+            name: calendar_embed_url
+            widget: string
+            required: false
+            hint: "Google Calendar embed src URL. Paste from Google Calendar → Settings → Integrate calendar → Embed code (the src= value). Leave blank to show the 'coming soon' placeholder."
+
+          - label: "Events Calendar — Subscribe URL (iCal)"
+            name: calendar_ical_url
+            widget: string
+            required: false
+            hint: "Google Calendar public iCal URL (.ics). Paste from Google Calendar → Settings → Integrate calendar → Public address in iCal format. Leave blank to hide the subscribe link."
+
+          - label: "Social Media Links"
+            name: social_links
+            widget: list
+            summary: "{{fields.platform}}"
+            required: false
+            hint: "Links shown in the Contact section and Contact page. Add, remove, or reorder."
+            fields:
+              - label: "Platform"
+                name: platform
+                widget: string
+                hint: "e.g. Facebook, Instagram, X, TikTok, YouTube"
+              - label: "Display Label"
+                name: label
+                widget: string
+                hint: "Text shown on the button (e.g. @ghostjam)"
+              - label: "URL"
+                name: url
+                widget: string
+                hint: "Full URL to the profile page."
+
+          - label: "Navigation — Page Visibility"
+            name: pages
+            widget: list
+            summary: "{{fields.label}} — {{fields.enabled}}"
+            hint: "Toggle pages on or off in the navigation bar. Enable a page when its content is ready."
+            fields:
+              - label: "Page ID"
+                name: id
+                widget: string
+                hint: "Do not change — must match the page filename (e.g. 'events' for events.html)."
+              - label: "Nav Label"
+                name: label
+                widget: string
+                hint: "Text shown in the navigation bar."
+              - label: "Enabled"
+                name: enabled
+                widget: boolean
+                default: false
+                hint: "Show this page in the nav bar."
+
+  # ── About Us ──────────────────────────────────────────────
+  - name: about_page
+    label: About Us
+    files:
+      - name: about
+        label: About Us
+        file: _data/about.json
+        format: json
+        fields:
+          - label: "Page Title"
+            name: page_title
+            widget: string
+          - label: "Page Intro"
+            name: page_intro
+            widget: text
+            required: false
+            hint: "Optional short paragraph below the page title."
+          - label: "Sections"
+            name: sections
+            widget: list
+            summary: "{{fields.heading}}"
+            hint: "Add as many sections as needed."
+            fields:
+              - label: "Heading"
+                name: heading
+                widget: string
+              - label: "Body"
+                name: body
+                widget: text
+
+  # ── Media Page ────────────────────────────────────────────
+  - name: media_page
+    label: Media
+    files:
+      - name: media
+        label: Media
+        file: _data/media.json
+        format: json
+        fields:
+          - label: "Page Title"
+            name: page_title
+            widget: string
+          - label: "Page Intro"
+            name: page_intro
+            widget: text
+            required: false
+          - label: "Clips"
+            name: clips
+            widget: list
+            summary: "{{fields.title}} — {{fields.date}}"
+            hint: "Add one entry per video or audio clip. Most recent first recommended."
+            fields:
+              - label: "Title"
+                name: title
+                widget: string
+                hint: "Short descriptive title for the clip."
+              - label: "Type"
+                name: type
+                widget: select
+                options:
+                  - { label: "Video", value: "video" }
+                  - { label: "Audio", value: "audio" }
+                default: "video"
+              - label: "Date"
+                name: date
+                widget: string
+                hint: "Date of the investigation (e.g. October 12, 2024)."
+              - label: "Location"
+                name: location
+                widget: string
+                hint: "Location where this was recorded."
+              - label: "YouTube URL"
+                name: youtube_url
+                widget: string
+                hint: "Full YouTube URL (e.g. https://www.youtube.com/watch?v=XXXXX). For audio clips, upload to YouTube with a static image."
+              - label: "Description"
+                name: description
+                widget: text
+                required: false
+                hint: "Optional context about what happens in this clip."
+
+  # ── Contact Page ──────────────────────────────────────────
+  - name: contact_page
+    label: Contact Us
+    files:
+      - name: contact
+        label: Contact Us
+        file: _data/contact.json
+        format: json
+        fields:
+          - label: "Page Title"
+            name: page_title
+            widget: string
+          - label: "Page Intro"
+            name: page_intro
+            widget: text
+            required: false
+            hint: "Short paragraph below the page title."
