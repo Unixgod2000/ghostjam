@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: GITHUB_USERNAME/ghostjam      # ← update with your GitHub username
+  repo: Unixgod2000/ghostjam      # ← update with your GitHub username
   branch: main
   base_url: https://sveltia-cms-auth-ghostjam.unixgod.workers.dev
 
