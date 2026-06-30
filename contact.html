@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contact GhostJam." />
+  <title>Contact | GhostJam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" id="nav-title">GhostJam</a>
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="/">Home</a></li>
+      </ul>
+      <button class="nav-toggle" id="nav-toggle"
+        aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="inner-page" aria-live="polite">
+      <h1 id="page-title">Contact Us</h1>
+      <p class="page-intro" id="page-intro"></p>
+
+      <div class="contact-block">
+        <h2>Email</h2>
+        <p><a href="#" id="contact-email-link"></a></p>
+      </div>
+
+      <div class="contact-block" id="social-block" style="display:none">
+        <h2>Follow Us</h2>
+        <div class="social-links" id="social-links" style="justify-content:flex-start; margin-top:0.75rem;"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> <span id="footer-text"></span> &nbsp;|&nbsp; <a href="#" id="footer-email"></a></p>
+  </footer>
+
+  <script>
+    const toggle   = document.getElementById('nav-toggle');
+    const navLinks = document.getElementById('nav-links');
+    toggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', e => {
+      if (!toggle.contains(e.target) && !navLinks.contains(e.target)) {
+        navLinks.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    fetch('/_data/content.json')
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(d => {
+        if (d.nav_title)     document.getElementById('nav-title').textContent   = d.nav_title;
+        if (d.footer_text)   document.getElementById('footer-text').textContent = d.footer_text;
+        if (d.contact_email) {
+          const fe = document.getElementById('footer-email');
+          fe.href = 'mailto:' + d.contact_email; fe.textContent = d.contact_email;
+          const cl = document.getElementById('contact-email-link');
+          cl.href = 'mailto:' + d.contact_email; cl.textContent = d.contact_email;
+        }
+        (d.pages || []).forEach(p => {
+          if (!p.enabled) return;
+          const li = document.createElement('li');
+          const a  = document.createElement('a');
+          a.href = '/' + p.id; a.textContent = p.label;
+          if (p.id === 'contact') a.setAttribute('aria-current', 'page');
+          li.appendChild(a); navLinks.appendChild(li);
+        });
+        const li = document.createElement('li');
+        li.innerHTML = '<a href="/#contact">Contact</a>';
+        navLinks.appendChild(li);
+
+        // Social links
+        const socials = d.social_links || [];
+        if (socials.length > 0) {
+          document.getElementById('social-block').style.display = 'block';
+          const sl = document.getElementById('social-links');
+          socials.forEach(s => {
+            if (!s.url || !s.label) return;
+            const a = document.createElement('a');
+            a.href = s.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+            a.className = 'social-link';
+            a.setAttribute('aria-label', 'GhostJam on ' + s.platform);
+            a.textContent = s.label;
+            sl.appendChild(a);
+          });
+        }
+      }).catch(() => {});
+
+    fetch('/_data/contact.json')
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(d => {
+        if (d.page_title) {
+          document.getElementById('page-title').textContent = d.page_title;
+          document.title = d.page_title + ' | GhostJam';
+        }
+        if (d.page_intro) document.getElementById('page-intro').textContent = d.page_intro;
+      }).catch(() => {});
+  </script>
+
+</body>
+</html>

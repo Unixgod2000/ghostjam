@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Upcoming GhostJam events, investigations, and appearances." />
+  <title>Events | GhostJam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" id="nav-title">GhostJam</a>
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="/">Home</a></li>
+      </ul>
+      <button class="nav-toggle" id="nav-toggle"
+        aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="events-page" aria-labelledby="events-heading">
+      <h1 id="events-heading">Events</h1>
+      <p class="page-intro">
+        Follow along with GhostJam investigations, appearances, and public events.
+      </p>
+
+      <!-- Subscribe link — shown only when calendar is configured -->
+      <p class="events-subscribe" id="subscribe-line" style="display:none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/>
+        </svg>
+        <a id="subscribe-link" href="#" target="_blank" rel="noopener noreferrer">Subscribe to this calendar</a>
+        — add to Google Calendar, Apple Calendar, or Outlook for automatic updates.
+      </p>
+
+      <!-- Calendar embed — placeholder until Google Calendar is configured -->
+      <div id="calendar-container">
+        <div class="calendar-placeholder">
+          <p>📅 Events calendar coming soon.</p>
+          <p>Check back here or follow us on social media for upcoming events.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> <span id="footer-text"></span> &nbsp;|&nbsp; <a href="#" id="footer-email"></a></p>
+  </footer>
+
+  <script>
+    const toggle   = document.getElementById('nav-toggle');
+    const navLinks = document.getElementById('nav-links');
+    toggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', e => {
+      if (!toggle.contains(e.target) && !navLinks.contains(e.target)) {
+        navLinks.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    fetch('/_data/content.json')
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(d => {
+        if (d.nav_title)     document.getElementById('nav-title').textContent   = d.nav_title;
+        if (d.footer_text)   document.getElementById('footer-text').textContent = d.footer_text;
+        if (d.contact_email) {
+          const fe = document.getElementById('footer-email');
+          fe.href = 'mailto:' + d.contact_email; fe.textContent = d.contact_email;
+        }
+        (d.pages || []).forEach(p => {
+          if (!p.enabled) return;
+          const li = document.createElement('li');
+          const a  = document.createElement('a');
+          a.href = '/' + p.id; a.textContent = p.label;
+          if (p.id === 'events') a.setAttribute('aria-current', 'page');
+          li.appendChild(a); navLinks.appendChild(li);
+        });
+        const li = document.createElement('li');
+        li.innerHTML = '<a href="/#contact">Contact</a>';
+        navLinks.appendChild(li);
+
+        // If a Google Calendar embed URL is configured, swap in the iframe
+        if (d.calendar_embed_url) {
+          const container = document.getElementById('calendar-container');
+          container.innerHTML = `<div class="calendar-embed"><iframe src="${d.calendar_embed_url}" title="GhostJam Events Calendar" frameborder="0" scrolling="no"></iframe></div>`;
+        }
+        // If an iCal subscribe URL is configured, show the subscribe line
+        if (d.calendar_ical_url) {
+          document.getElementById('subscribe-line').style.display = 'inline-flex';
+          document.getElementById('subscribe-link').href = d.calendar_ical_url;
+        }
+      }).catch(() => {});
+  </script>
+
+</body>
+</html>

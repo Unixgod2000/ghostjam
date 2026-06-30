@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="" id="meta-description" />
+  <title id="page-title">GhostJam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- ── Nav ─────────────────────────────────────────────── -->
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" id="nav-title">GhostJam</a>
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="/" aria-current="page">Home</a></li>
+      </ul>
+      <button class="nav-toggle" id="nav-toggle"
+        aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <div class="hero-logo-wrap" id="hero-logo-wrap">
+        <img id="hero-logo-img" src="" alt="GhostJam logo" />
+      </div>
+      <div class="hero-text">
+        <span class="hero-eyebrow" id="hero-eyebrow" style="display:none"></span>
+        <h1 class="hero-title" id="hero-title"></h1>
+        <p class="hero-subtitle" id="hero-subtitle"></p>
+        <p class="hero-body" id="hero-body"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ────────────────────────────────────────── -->
+  <section class="section" aria-label="What we do">
+    <div class="section-inner">
+      <span class="section-label">What We Do</span>
+      <div class="features-grid" id="features-grid"></div>
+    </div>
+  </section>
+
+  <!-- ── CTA / Contact ───────────────────────────────────── -->
+  <section class="cta-section" id="contact" aria-labelledby="cta-heading">
+    <div class="cta-inner">
+      <h2 class="cta-heading" id="cta-heading"></h2>
+      <p class="cta-body" id="cta-body"></p>
+      <p class="cta-email">
+        For more information, contact us at
+        <a href="#" id="contact-link"></a>
+      </p>
+
+      <div class="social-links" id="social-links" aria-label="Social media links"></div>
+    </div>
+  </section>
+
+  <!-- ── Footer ──────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> <span id="footer-text"></span> &nbsp;|&nbsp; <a href="#" id="footer-email"></a></p>
+  </footer>
+
+  <script>
+    const toggle   = document.getElementById('nav-toggle');
+    const navLinks = document.getElementById('nav-links');
+    toggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', e => {
+      if (!toggle.contains(e.target) && !navLinks.contains(e.target)) {
+        navLinks.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function buildNav(pages) {
+      (pages || []).forEach(p => {
+        if (!p.enabled) return;
+        const li = document.createElement('li');
+        const a  = document.createElement('a');
+        a.href = '/' + p.id;
+        a.textContent = p.label;
+        li.appendChild(a);
+        navLinks.appendChild(li);
+      });
+      const li = document.createElement('li');
+      li.innerHTML = '<a href="#contact">Contact</a>';
+      navLinks.appendChild(li);
+    }
+
+    fetch('/_data/content.json')
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(d => {
+        document.title = (d.site_title || 'GhostJam');
+        document.getElementById('meta-description').content = d.hero_body || '';
+        document.getElementById('nav-title').textContent = d.nav_title || 'GhostJam';
+
+        // Hero logo
+        if (d.hero_image) {
+          document.getElementById('hero-logo-wrap').style.display = 'block';
+          const img = document.getElementById('hero-logo-img');
+          img.src = d.hero_image;
+          img.alt = (d.nav_title || 'GhostJam') + ' logo';
+        }
+
+        // Hero text
+        if (d.hero_eyebrow) {
+          const ey = document.getElementById('hero-eyebrow');
+          ey.textContent = d.hero_eyebrow;
+          ey.style.display = 'inline-block';
+        }
+        document.getElementById('hero-title').textContent    = d.hero_title    || '';
+        document.getElementById('hero-subtitle').textContent = d.hero_subtitle || '';
+        document.getElementById('hero-body').textContent     = d.hero_body     || '';
+
+        // Features
+        const grid = document.getElementById('features-grid');
+        (d.services || []).forEach(s => {
+          const card = document.createElement('div');
+          card.className = 'feature-card';
+          card.innerHTML = `<h3></h3><p></p>`;
+          card.querySelector('h3').textContent = s.title;
+          card.querySelector('p').textContent  = s.body;
+          grid.appendChild(card);
+        });
+
+        // CTA
+        document.getElementById('cta-heading').textContent = d.cta_heading || '';
+        document.getElementById('cta-body').textContent    = d.cta_body    || '';
+
+        const email = d.contact_email || '';
+        document.getElementById('contact-link').href        = 'mailto:' + email;
+        document.getElementById('contact-link').textContent = email;
+        document.getElementById('footer-text').textContent  = d.footer_text || '';
+        const fe = document.getElementById('footer-email');
+        fe.href = 'mailto:' + email; fe.textContent = email;
+
+        // Social links
+        const sl = document.getElementById('social-links');
+        (d.social_links || []).forEach(s => {
+          if (!s.url || !s.label) return;
+          const a = document.createElement('a');
+          a.href = s.url;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.className = 'social-link';
+          a.setAttribute('aria-label', 'GhostJam on ' + s.platform);
+          a.textContent = s.label;
+          sl.appendChild(a);
+        });
+
+        buildNav(d.pages);
+      })
+      .catch(err => console.error('content.json error:', err));
+  </script>
+
+</body>
+</html>
