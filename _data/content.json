@@ -1,25 +1,44 @@
 {
   "site_title": "GhostJam",
   "nav_title": "GhostJam",
-  "hero_image": "",
+  "hero_image": "/images/GhostJAM.png",
   "hero_eyebrow": "",
-  "hero_title": "",
-  "hero_subtitle": "",
-  "hero_body": "",
+  "hero_title": "Welcome to GhostJam!",
+  "hero_subtitle": "Seeking to understand the unexplained",
+  "hero_body": "We are amateur paranormal investigators.  We believe in something beyond this dimension even though there is no proof that it exists.  We seek to try to discover it and potentially communicate with it.  These are our findings.",
   "services": [
-    { "title": "Feature Title", "body": "Feature description." }
+    {
+      "title": "Feature Title",
+      "body": "Feature description."
+    }
   ],
-  "cta_heading": "",
-  "cta_body": "",
-  "contact_email": "",
+  "cta_heading": "Come follow us!",
+  "cta_body": "Decide for yourself if what we experience is explainable.",
+  "contact_email": "ghostjam@aftertime.com",
   "footer_text": "GhostJam",
   "calendar_embed_url": "",
   "calendar_ical_url": "",
   "social_links": [],
   "pages": [
-    { "id": "about",   "label": "About",  "enabled": false },
-    { "id": "events",  "label": "Events", "enabled": false },
-    { "id": "media",   "label": "Media",  "enabled": false },
-    { "id": "contact", "label": "Contact","enabled": false }
+    {
+      "id": "about",
+      "label": "About",
+      "enabled": false
+    },
+    {
+      "id": "events",
+      "label": "Events",
+      "enabled": false
+    },
+    {
+      "id": "media",
+      "label": "Media",
+      "enabled": false
+    },
+    {
+      "id": "contact",
+      "label": "Contact",
+      "enabled": false
+    }
   ]
 }
