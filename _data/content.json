@@ -1,0 +1,25 @@
+{
+  "site_title": "GhostJam",
+  "nav_title": "GhostJam",
+  "hero_image": "",
+  "hero_eyebrow": "",
+  "hero_title": "",
+  "hero_subtitle": "",
+  "hero_body": "",
+  "services": [
+    { "title": "Feature Title", "body": "Feature description." }
+  ],
+  "cta_heading": "",
+  "cta_body": "",
+  "contact_email": "",
+  "footer_text": "GhostJam",
+  "calendar_embed_url": "",
+  "calendar_ical_url": "",
+  "social_links": [],
+  "pages": [
+    { "id": "about",   "label": "About",  "enabled": false },
+    { "id": "events",  "label": "Events", "enabled": false },
+    { "id": "media",   "label": "Media",  "enabled": false },
+    { "id": "contact", "label": "Contact","enabled": false }
+  ]
+}
