@@ -2,7 +2,7 @@ backend:
   name: github
   repo: GITHUB_USERNAME/ghostjam      # ← update with your GitHub username
   branch: main
-  base_url: https://OAUTH_WORKER_URL  # ← update after deploying the Sveltia OAuth Worker
+  base_url: https://sveltia-cms-auth-ghostjam.unixgod.workers.dev
 
 media_folder: images
 public_folder: /images
